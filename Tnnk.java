@@ -12,7 +12,7 @@ public class Tnnk extends JPanel implements KeyListener {
     JFrame j = new JFrame();
     Graphics g = null;    
     ArrayList<O> list = new ArrayList<>();
-    Tnk tnk = new Tnk(100, 400);
+    Tnk tnk = new Tnk(100, 300);
     int power = 60;
     JLabel powerLbl = new JLabel();
     boolean starting = true;
@@ -26,13 +26,9 @@ public class Tnnk extends JPanel implements KeyListener {
     Timer timer;
     boolean s = true;
     int angle = 0;
-    boolean getout = false;
     double aangle = 0;
+    boolean shooting = false;
 
-    class Bullet {
-        int x;
-    }
-    
     class O {
         int x, y;
     }
@@ -56,13 +52,20 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         
         void drawMe() {
-            g.setColor(Color.green);
-            g.fillRect(sqbot_x, sqbot_y, 90, 20);
-            g.setColor(Color.black);
-            g.fillRect(sqbot_x, sqbot_y+20, 90, 15);
-            g.setColor(Color.green);
-            g.fillRect(sqtop_x, sqtop_y, 50, 30);
             Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(1));
+            g2.setColor(Color.green);
+            g2.fillRect(sqbot_x, sqbot_y, 90, 20);
+            g2.setColor(Color.black);
+            g2.fillRect(sqbot_x, sqbot_y+20, 90, 15);
+            g2.setColor(Color.green);
+            g2.fillRect(sqtop_x, sqtop_y, 50, 30);
+            g2.setColor(Color.black);
+            g2.drawRect(sqbot_x-1, sqbot_y-1, 92, 22);
+            g2.setColor(Color.black);
+            g2.drawRect(sqbot_x-1, sqbot_y+20-1, 92, 17);
+            g2.setColor(Color.black);
+            g2.drawRect(sqtop_x-1, sqtop_y-1, 52, 32);
             g2.setStroke(new BasicStroke(10));
             if(s) {
                 angle = can_y+10;
@@ -99,11 +102,15 @@ public class Tnnk extends JPanel implements KeyListener {
         Random rand = new Random();
         if(starting)
         for(int i=0; i<30; i++) {
-            int v = 300 + rand.nextInt(140);
+            int v = 300 + rand.nextInt(100);
             O o = new O();
             o.x = i*45;
             o.y = v;
             list.add(o);
+            
+            if(i==3) {
+                tnk = new Tnk(o.x, o.y);
+            }
         }
         g.setColor(new Color(140, 250, 70));
         Graphics2D g2 = (Graphics2D) g;
@@ -119,13 +126,13 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
             starting = false;
         
-        g.setColor(Color.LIGHT_GRAY);
+        g.setColor(Color.GRAY);
         g.fillOval(1000, 50, 100, 100);
-        g.setColor(new Color(120, 120, 120));
+        g.setColor(new Color(150, 150, 150));
         g.fillOval(1030, 60, 20, 20);
-        g.setColor(new Color(120, 120, 120));
+        g.setColor(new Color(150, 150, 150));
         g.fillOval(1060, 80, 20, 20);
-        g.setColor(new Color(120, 120, 120));
+        g.setColor(new Color(150, 150, 150));
         g.fillOval(1030, 100, 20, 20);
 
         g.setColor(Color.BLACK);
@@ -159,40 +166,44 @@ public class Tnnk extends JPanel implements KeyListener {
             power++;
         }
         else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            time = 0;
-            for(int i=0; i<(int)((double)power/(double)12); i++) {
-                ballX= lastPointX = startX = 190;
-                ballY = lastPointY = startY = 370;
-                getUserInput();
+            if(!shooting) {
+                shooting = true;
+                time = 0;
+                for(int i=0; i<(int)((double)power/(double)12); i++) {
+                    ballX= lastPointX = startX = tnk.x + 90;
+                    ballY = lastPointY = startY = tnk.y - 30;
+                    getUserInput();
 
-                timer = new Timer(animationSpeed, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent event) {
+                    timer = new Timer(animationSpeed, new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent event) {
 
-                        moveBall();
+                            if(time != -1) {
+                                moveBall();
 
-                        Graphics2D g2d = (Graphics2D) g;
-                        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                RenderingHints.VALUE_ANTIALIAS_ON);
-                        g2d.setColor(Color.RED);
-                        g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
+                                Graphics2D g2d = (Graphics2D) g;
+                                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                        RenderingHints.VALUE_ANTIALIAS_ON);
+                                g2d.setColor(Color.RED);
+                                g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
 
-                        if((Math.abs(lastPointX - ballX)>=1) && (Math.abs(lastPointY - ballY)>=1) ) {
-                            curvePoints.add(new Point2D.Double(ballX, ballY));
-                            lastPointX = ballX; lastPointY = ballY;
+                                if((Math.abs(lastPointX - ballX)>=1) && (Math.abs(lastPointY - ballY)>=1) ) {
+                                    curvePoints.add(new Point2D.Double(ballX, ballY));
+                                    lastPointX = ballX; lastPointY = ballY;
+                                }
+
+                                repaint();
+
+                                if(! inBounds()) {
+                                    timer.stop();
+
+                                    shooting = false;
+                                }
+                            }
                         }
-
-                        repaint();
-
-                        if(! inBounds()) {
-                            timer.stop();
-                            getout = false;
-                        }
-                    }
-                });
-                timer.start();
-                
-                getout = true;
+                    });
+                    timer.start();
+                }
             }
         }
         repaint();
@@ -201,7 +212,7 @@ public class Tnnk extends JPanel implements KeyListener {
     private void moveBall() {
 
         ballX = startX + (xSpeed * time);
-        ballY = startY - ((ySpeed *time)-(1.0 *G * Math.pow(time, 2))) ;
+        ballY = startY - ((ySpeed *time)-(1.1 *G * Math.pow(time, 2))) ;
         time += deltaTime;
 
         for(int i=0; i<list.size(); i++) {
@@ -214,16 +225,22 @@ public class Tnnk extends JPanel implements KeyListener {
                 double m = (double)(y2 - y1)/(double)(x2 - x1);
                 double c = y1 - m*x1;
                 
-                if(Math.abs((ballY - c)/(ballX) - m) < 3 && (Math.abs(ballX - x1) < 25 && Math.abs(ballY - y1) < 25)) {
+                if(Math.abs((ballY - c)/(ballX) - m) < 1.4 && (Math.abs(ballX - x1) < 15 && Math.abs(ballY - y1) < 15)) {
                     O l = new O();
                     l.x = (int) ballX + 2;
-                    l.y = (int) ballY + 120;
+                    l.y = (int) ballY+30;
                     list.add(i+1, l);
                     l = new O();
-                    l.x = (int) ballX + 120;
+                    l.x = (int) ballX + 20;
                     l.y = (int) ballY + 120;
                     list.add(i+2, l);
+
+                    time = -1;
+                    
                     timer.stop();
+                                
+                    shooting = false;
+                    
                     return;
                 }
             } catch(Exception e) {}
@@ -260,7 +277,7 @@ public class Tnnk extends JPanel implements KeyListener {
     
     void setGUI() {
  
-        j.setTitle("Tank Digger");
+        j.setTitle("Tank Digger Kim Jong Un");
         
         j.setLayout(null);
         j.setBounds(0, 0, 1200, 800);
