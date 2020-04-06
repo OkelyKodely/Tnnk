@@ -107,21 +107,22 @@ public class Tnnk extends JPanel implements KeyListener {
             o.y = v;
             list.add(o);
         }
-        g.setColor(new Color(240, 150, 70));
-        for(int j=0; j<800; j++)
-        for(int i=0; i<list.size(); i++) {
-            try {
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setStroke(new BasicStroke(3));
-    
-                g2.drawLine(list.get(i).x, list.get(i).y+j, list.get(i+1).x, list.get(i+1).y+j);
-            } catch(Exception e) {}
+        g.setColor(new Color(140, 250, 70));
+        Graphics2D g2 = (Graphics2D) g;
+        for(int j=0; j<800; j++){
+            g2.setColor(new Color(0, j/4 + 55, 0));
+            for(int i=0; i<list.size(); i++) {
+                try {
+                    g2.setStroke(new BasicStroke(3));
+                    g2.drawLine(list.get(i).x, list.get(i).y+j, list.get(i+1).x, list.get(i+1).y+j);
+                } catch(Exception e) {}
+            }
         }
         if(starting)
-        for(int i=0; i<250; i++) {
-            int v = 500 + rand.nextInt(200);
+        for(int i=0; i<450; i++) {
+            int v = 450 + rand.nextInt(200);
             O o = new O();
-            o.x = i*50;
+            o.x = i*20;
             o.y = v;
             list2.add(o);
         }
@@ -129,15 +130,20 @@ public class Tnnk extends JPanel implements KeyListener {
             starting = false;
         for(int i=0; i<list2.size(); i++) {
             try {
-                g.setColor(new Color(130, 255, 130));
-                g.fillRect(list2.get(i).x, list2.get(i).y, 20, 20);
-                g.setColor(new Color(200, 150, 90));
-                g.fillRect(list2.get(i).x, list2.get(i).y+20, 20, 40);
+//                g.setColor(Color.GREEN);
+//                g.fillRect(list2.get(i).x, list2.get(i).y, 20, 20);
+//                g.setColor(new Color(200, 150, 90));
+//                g.fillRect(list2.get(i).x, list2.get(i).y+20, 20, 30);
             } catch(Exception e) {}
         }
+        
+        g.setColor(Color.ORANGE);
+        g.fillOval(1000, 50, 100, 100);
 
         g.setColor(Color.BLACK);
-        g.drawString(power + "", 100, 40);
+        g.setFont(new Font("arial", Font.PLAIN, 25));
+        
+        g.drawString("POWER: " + power + "", 100, 40);
     }
 
     @Override
@@ -164,7 +170,7 @@ public class Tnnk extends JPanel implements KeyListener {
             time = 0;
             for(int i=0; i<(int)((double)power/(double)12); i++) {
                 ballX= lastPointX = startX = 190;
-                ballY = lastPointY = startY = 400;
+                ballY = lastPointY = startY = 370;
                 getUserInput();
 
                 timer = new Timer(animationSpeed, new ActionListener() {
@@ -219,12 +225,14 @@ public class Tnnk extends JPanel implements KeyListener {
                 if(Math.abs((ballY - c)/(ballX) - m) < 3 && (Math.abs(ballX - x1) < 25 && Math.abs(ballY - y1) < 25)) {
                     O l = new O();
                     l.x = (int) ballX + 2;
-                    l.y = (int) ballY + 300;
+                    l.y = (int) ballY + 120;
                     list.add(i+1, l);
                     l = new O();
                     l.x = (int) ballX + 120;
-                    l.y = (int) ballY + 300;
+                    l.y = (int) ballY + 120;
                     list.add(i+2, l);
+                    timer.stop();
+                    return;
                 }
             } catch(Exception e) {}
         }
@@ -259,6 +267,8 @@ public class Tnnk extends JPanel implements KeyListener {
     }
     
     void setGUI() {
+ 
+        j.setTitle("Tank Digger");
         
         j.setLayout(null);
         j.setBounds(0, 0, 1200, 800);
