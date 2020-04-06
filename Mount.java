@@ -16,7 +16,7 @@ public class Mount extends JPanel implements KeyListener {
     Graphics g = null;    
     ArrayList<O> list = new ArrayList<>();
     ArrayList<O> list2 = new ArrayList<>();
-    Tnk tnk = new Tnk(100, 700);
+    Tnk tnk = new Tnk(100, 400);
     int power = 60;
     JLabel powerLbl = new JLabel();
     boolean starting = true;
@@ -70,7 +70,6 @@ public class Mount extends JPanel implements KeyListener {
                 s = false;
             }
             g2.drawLine(can_x, can_y+10, can_x + 30, angle);
-            System.out.println(angle);
         }
     }
     boolean s = true;
@@ -99,7 +98,7 @@ public class Mount extends JPanel implements KeyListener {
         if(starting)
             list2.clear();
 
-        g.setColor(new Color(100, 155, 255));
+        g.setColor(new Color(100, 255, 155));
         g.fillRect(0, 0, 1200, 800);
         Random rand = new Random();
         if(starting)
@@ -165,36 +164,39 @@ public class Mount extends JPanel implements KeyListener {
         }
         else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
             time = 0;
-            for(int i=0; i<(int)(power/22); i++) {
-            ballX= lastPointX = startX = 190;
-            ballY = lastPointY = startY = 700;
-            getUserInput();
+            for(int i=0; i<(int)((double)power/(double)12); i++) {
+                ballX= lastPointX = startX = 190;
+                ballY = lastPointY = startY = 400;
+                getUserInput();
 
-            timer = new Timer(animationSpeed, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent event) {
+                timer = new Timer(animationSpeed, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
 
-                    moveBall();
+                        moveBall();
 
-                    Graphics2D g2d = (Graphics2D) g;
-                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2d.setColor(Color.RED);
-                    g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
+                        Graphics2D g2d = (Graphics2D) g;
+                        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2d.setColor(Color.RED);
+                        g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
 
-                    if((Math.abs(lastPointX - ballX)>=1) && (Math.abs(lastPointY - ballY)>=1) ) {
-                        curvePoints.add(new Point2D.Double(ballX, ballY));
-                        lastPointX = ballX; lastPointY = ballY;
+                        if((Math.abs(lastPointX - ballX)>=1) && (Math.abs(lastPointY - ballY)>=1) ) {
+                            curvePoints.add(new Point2D.Double(ballX, ballY));
+                            lastPointX = ballX; lastPointY = ballY;
+                        }
+
+                        repaint();
+
+                        if(! inBounds()) {
+                            timer.stop();
+                            getout = false;
+                        }
                     }
-
-                    repaint();
-
-                    if(! inBounds()) {
-                        timer.stop();
-                    }
-                }
-            });
-            timer.start();
+                });
+                timer.start();
+                
+                getout = true;
             }
         }
         repaint();
@@ -214,10 +216,10 @@ public class Mount extends JPanel implements KeyListener {
     private void moveBall() {
 
         ballX = startX + (xSpeed * time);
-        ballY = startY - ((ySpeed *time)-(0.5 *G * Math.pow(time, 2))) ;
+        ballY = startY - ((ySpeed *time)-(1.0 *G * Math.pow(time, 2))) ;
         time += deltaTime;
 
-        if(((ySpeed *time)-(0.5 *G * Math.pow(time, 2))) < 0)
+//        if(!getout)
         for(int i=0; i<list.size(); i++) {
             try {
                 int y2, y1, x2, x1;
@@ -226,10 +228,14 @@ public class Mount extends JPanel implements KeyListener {
                 x2 = list.get(i+1).x;
                 x1 = list.get(i).x;
                 double m = (double)(y2 - y1)/(double)(x2 - x1);
-                double mi = (double)(y2 - ballY)/(double)(x2 - ballX);
-                if(m - mi <= 0.2) {
-                    list.get(i+1).y = (int) ballY;
-                    list.get(i+1).x = (int) ballX;
+                double c = y1 - m*x1;
+                
+                if(Math.abs((ballY - c)/(ballX) - m) < 1 && (Math.abs(ballX - x1) < 5 && Math.abs(ballY - y1) < 5)) {
+                    O l = new O();
+                    l.x = (int) ballX + 2;
+                    l.y = (int) ballY + 300;
+                    list.add(i+2, l);
+                    //return;
                 }
             } catch(Exception e) {}
         }
@@ -237,6 +243,8 @@ public class Mount extends JPanel implements KeyListener {
         repaint();
     }
 
+    boolean getout = false;
+    
     double aangle = 0;//todo replace with user input + verification
 
     private void getUserInput() {
