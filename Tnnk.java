@@ -12,7 +12,6 @@ public class Tnnk extends JPanel implements KeyListener {
     JFrame j = new JFrame();
     Graphics g = null;    
     ArrayList<O> list = new ArrayList<>();
-    ArrayList<O> list2 = new ArrayList<>();
     Tnk tnk = new Tnk(100, 400);
     int power = 60;
     JLabel powerLbl = new JLabel();
@@ -93,11 +92,10 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
             list.clear();
 
-        if(starting)
-            list2.clear();
-
-        g.setColor(new Color(100, 205, 155));
-        g.fillRect(0, 0, 1200, 800);
+        for(int i=0; i<801; i++) {
+            g.setColor(new Color(100, 155, 55+i/4));
+            g.drawLine(0, i, 1200, i);
+        }
         Random rand = new Random();
         if(starting)
         for(int i=0; i<30; i++) {
@@ -119,31 +117,25 @@ public class Tnnk extends JPanel implements KeyListener {
             }
         }
         if(starting)
-        for(int i=0; i<450; i++) {
-            int v = 450 + rand.nextInt(200);
-            O o = new O();
-            o.x = i*20;
-            o.y = v;
-            list2.add(o);
-        }
-        if(starting)
             starting = false;
-        for(int i=0; i<list2.size(); i++) {
-            try {
-//                g.setColor(Color.GREEN);
-//                g.fillRect(list2.get(i).x, list2.get(i).y, 20, 20);
-//                g.setColor(new Color(200, 150, 90));
-//                g.fillRect(list2.get(i).x, list2.get(i).y+20, 20, 30);
-            } catch(Exception e) {}
-        }
         
-        g.setColor(Color.ORANGE);
+        g.setColor(Color.LIGHT_GRAY);
         g.fillOval(1000, 50, 100, 100);
+        g.setColor(new Color(120, 120, 120));
+        g.fillOval(1030, 60, 20, 20);
+        g.setColor(new Color(120, 120, 120));
+        g.fillOval(1060, 80, 20, 20);
+        g.setColor(new Color(120, 120, 120));
+        g.fillOval(1030, 100, 20, 20);
 
         g.setColor(Color.BLACK);
         g.setFont(new Font("arial", Font.PLAIN, 25));
         
         g.drawString("POWER: " + power + "", 100, 40);
+
+        g.drawString("power is left/right keys", 100, 60);
+        g.drawString("angle is up/down keys", 100, 80);
+        g.drawString("to shoot, press spacebar", 100, 100);
     }
 
     @Override
