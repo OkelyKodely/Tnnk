@@ -96,7 +96,7 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
             list2.clear();
 
-        g.setColor(new Color(100, 255, 155));
+        g.setColor(new Color(100, 205, 155));
         g.fillRect(0, 0, 1200, 800);
         Random rand = new Random();
         if(starting)
@@ -220,6 +220,10 @@ public class Tnnk extends JPanel implements KeyListener {
                     O l = new O();
                     l.x = (int) ballX + 2;
                     l.y = (int) ballY + 300;
+                    list.add(i+1, l);
+                    l = new O();
+                    l.x = (int) ballX + 120;
+                    l.y = (int) ballY + 300;
                     list.add(i+2, l);
                 }
             } catch(Exception e) {}
@@ -230,7 +234,7 @@ public class Tnnk extends JPanel implements KeyListener {
 
     private void getUserInput() {
 
-        double speed = 140;
+        double speed = 50 + power;
         xSpeed = speed * Math.cos(aangle * (Math.PI / 180));
         ySpeed = speed * Math.sin(aangle * (Math.PI / 180));
     }
