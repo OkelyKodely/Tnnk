@@ -54,7 +54,7 @@ public class Tnnk extends JPanel implements KeyListener {
         void drawMe() {
             Graphics2D g2 = (Graphics2D) g;
             g2.setStroke(new BasicStroke(1));
-            g2.setColor(Color.green);
+            g2.setColor(Color.GRAY);
             g2.fillRect(sqbot_x, sqbot_y, 90, 20);
             g2.setColor(Color.black);
             g2.fillRect(sqbot_x, sqbot_y+20, 90, 15);
@@ -102,7 +102,7 @@ public class Tnnk extends JPanel implements KeyListener {
         Random rand = new Random();
         if(starting)
         for(int i=0; i<30; i++) {
-            int v = 300 + rand.nextInt(100);
+            int v = 300 + rand.nextInt(230);
             O o = new O();
             o.x = i*45;
             o.y = v;
@@ -136,13 +136,21 @@ public class Tnnk extends JPanel implements KeyListener {
         g.fillOval(1030, 100, 20, 20);
 
         g.setColor(Color.BLACK);
+
+        g.setFont(new Font("arial", Font.PLAIN, 25));
+
+        g.drawString("F L A T L A N D E R", 100, 30);
+        
         g.setFont(new Font("arial", Font.PLAIN, 25));
         
-        g.drawString("POWER: " + power + "", 100, 40);
+        g.setColor(Color.RED);
+        g.drawString("POWER: " + power + "   ANGLE: " + aangle, 100, 70);
 
-        g.drawString("power is left/right keys", 100, 60);
-        g.drawString("angle is up/down keys", 100, 80);
-        g.drawString("to shoot, press spacebar", 100, 100);
+        g.setColor(Color.BLACK);
+        
+        g.drawString("power is left/right keys", 100, 90);
+        g.drawString("angle is up/down keys", 100, 120);
+        g.drawString("to shoot, press spacebar", 100, 150);
     }
 
     @Override
@@ -187,11 +195,6 @@ public class Tnnk extends JPanel implements KeyListener {
                                 g2d.setColor(Color.RED);
                                 g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
 
-                                if((Math.abs(lastPointX - ballX)>=1) && (Math.abs(lastPointY - ballY)>=1) ) {
-                                    curvePoints.add(new Point2D.Double(ballX, ballY));
-                                    lastPointX = ballX; lastPointY = ballY;
-                                }
-
                                 repaint();
 
                                 if(! inBounds()) {
@@ -235,6 +238,9 @@ public class Tnnk extends JPanel implements KeyListener {
                     l.y = (int) ballY + 120;
                     list.add(i+2, l);
 
+                    list.get(i).x = list.get(i).x - 50;
+                    list.get(i).y = l.y - 50;
+                    
                     time = -1;
                     
                     timer.stop();
@@ -277,7 +283,7 @@ public class Tnnk extends JPanel implements KeyListener {
     
     void setGUI() {
  
-        j.setTitle("Tank Digger Kim Jong Un");
+        j.setTitle("F L A T L A N D E R");
         
         j.setLayout(null);
         j.setBounds(0, 0, 1200, 800);
