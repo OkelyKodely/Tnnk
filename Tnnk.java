@@ -86,7 +86,7 @@ public class Tnnk extends JPanel implements KeyListener {
                 while(true) {
                     tnk.drawMe();
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(100);
                     } catch(Exception e) {}
                 }
             }
@@ -156,13 +156,13 @@ public class Tnnk extends JPanel implements KeyListener {
         g.setColor(new Color(150, 150, 150));
         g.fillOval(1030, 100, 20, 20);
 
-        g.setColor(Color.BLACK);
+        g.setColor(Color.BLUE);
 
         g.setFont(new Font("arial", Font.PLAIN, 25));
 
         g.drawString("F L A T L A N D E R", 100, 30);
         
-        g.setFont(new Font("arial", Font.PLAIN, 25));
+        g.setFont(new Font("arial", Font.PLAIN, 15));
         
         g.setColor(Color.RED);
         g.drawString("POWER: " + power + "   ANGLE: " + aangle, 100, 70);
