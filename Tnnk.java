@@ -23,7 +23,6 @@ public class Tnnk extends JPanel implements KeyListener {
     double startX, startY, ballX, ballY;
     double xSpeed, ySpeed, lastPointX, lastPointY;
     double time, deltaTime = 0.01 ;
-    ArrayList<Point2D> curvePoints= new ArrayList<>();
     Timer timer;
     boolean s = true;
     int angle = 0;
