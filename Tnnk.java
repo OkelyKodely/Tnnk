@@ -12,12 +12,13 @@ public class Tnnk extends JPanel implements KeyListener {
     JFrame j = new JFrame();
     Graphics g = null;    
     ArrayList<O> list = new ArrayList<>();
+    ArrayList<O> list2 = new ArrayList<>();
     Tnk tnk = new Tnk(100, 300);
     int power = 60;
     JLabel powerLbl = new JLabel();
     boolean starting = true;
     static final double G = 9.8;
-    int animationSpeed = 1;
+    int animationSpeed = 5;
     static int size = 900, ballDiameter = 10;
     double startX, startY, ballX, ballY;
     double xSpeed, ySpeed, lastPointX, lastPointY;
@@ -54,11 +55,11 @@ public class Tnnk extends JPanel implements KeyListener {
         void drawMe() {
             Graphics2D g2 = (Graphics2D) g;
             g2.setStroke(new BasicStroke(1));
-            g2.setColor(Color.GRAY);
+            g2.setColor(Color.red);
             g2.fillRect(sqbot_x, sqbot_y, 90, 20);
             g2.setColor(Color.black);
             g2.fillRect(sqbot_x, sqbot_y+20, 90, 15);
-            g2.setColor(Color.green);
+            g2.setColor(Color.red);
             g2.fillRect(sqtop_x, sqtop_y, 50, 30);
             g2.setColor(Color.black);
             g2.drawRect(sqbot_x-1, sqbot_y-1, 92, 22);
@@ -67,6 +68,7 @@ public class Tnnk extends JPanel implements KeyListener {
             g2.setColor(Color.black);
             g2.drawRect(sqtop_x-1, sqtop_y-1, 52, 32);
             g2.setStroke(new BasicStroke(10));
+            g2.setColor(Color.red);
             if(s) {
                 angle = can_y+10;
                 s = false;
@@ -83,6 +85,9 @@ public class Tnnk extends JPanel implements KeyListener {
             public void run() {
                 while(true) {
                     tnk.drawMe();
+                    try {
+                        Thread.sleep(1000);
+                    } catch(Exception e) {}
                 }
             }
         };
@@ -92,8 +97,10 @@ public class Tnnk extends JPanel implements KeyListener {
 
     public void paint(Graphics g) {
 
-        if(starting)
+        if(starting) {
             list.clear();
+            list2.clear();
+        }
 
         for(int i=0; i<801; i++) {
             g.setColor(new Color(100, 155, 55+i/4));
@@ -101,10 +108,10 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         Random rand = new Random();
         if(starting)
-        for(int i=0; i<30; i++) {
-            int v = 300 + rand.nextInt(230);
+        for(int i=0; i<22; i++) {
+            int v = 200 + rand.nextInt(130);
             O o = new O();
-            o.x = i*45;
+            o.x = i*60;
             o.y = v;
             list.add(o);
             
@@ -122,6 +129,20 @@ public class Tnnk extends JPanel implements KeyListener {
                     g2.drawLine(list.get(i).x, list.get(i).y+j, list.get(i+1).x, list.get(i+1).y+j);
                 } catch(Exception e) {}
             }
+        }
+        if(starting)
+        for(int i=0; i<122; i++) {
+            int v = 20 + rand.nextInt(130);
+            O o = new O();
+            o.x = 20 + rand.nextInt(1100);
+            o.y = v;
+            list2.add(o);
+        }
+        g2.setColor(Color.WHITE);
+        for(int i=0; i<list2.size(); i++) {
+            try {
+                g2.drawOval(list2.get(i).x, list2.get(i).y, 1, 1);
+            } catch(Exception e) {}
         }
         if(starting)
             starting = false;
@@ -151,6 +172,8 @@ public class Tnnk extends JPanel implements KeyListener {
         g.drawString("power is left/right keys", 100, 90);
         g.drawString("angle is up/down keys", 100, 120);
         g.drawString("to shoot, press spacebar", 100, 150);
+
+        tnk.drawMe();
     }
 
     @Override
@@ -210,6 +233,8 @@ public class Tnnk extends JPanel implements KeyListener {
             }
         }
         repaint();
+        
+        tnk.drawMe();
     }
 
     private void moveBall() {
@@ -228,7 +253,10 @@ public class Tnnk extends JPanel implements KeyListener {
                 double m = (double)(y2 - y1)/(double)(x2 - x1);
                 double c = y1 - m*x1;
                 
-                if(Math.abs((ballY - c)/(ballX) - m) < 1.4 && (Math.abs(ballX - x1) < 15 && Math.abs(ballY - y1) < 15)) {
+                if(Math.abs((ballY - c)/(ballX) - m) < 0.7 && (Math.abs(ballX - x1) < 20 && Math.abs(ballY - y1) < 20)) {
+                    
+                    list.remove(list.get(i+1));
+                    
                     O l = new O();
                     l.x = (int) ballX + 2;
                     l.y = (int) ballY+30;
@@ -291,7 +319,6 @@ public class Tnnk extends JPanel implements KeyListener {
         j.add(this);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         j.setVisible(true);
-        j.setExtendedState(j.getExtendedState() | JFrame.MAXIMIZED_BOTH);
   
         setGraphics();
  
