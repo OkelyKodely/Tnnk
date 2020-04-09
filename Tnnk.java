@@ -15,6 +15,7 @@ public class Tnnk extends JPanel implements KeyListener {
     ArrayList<O> list2 = new ArrayList<>();
     ArrayList<O> enemies = new ArrayList<>();
     ArrayList<O> points = new ArrayList<>();
+    ArrayList<O> trees = new ArrayList<>();
     Tnk tnk = new Tnk(100, 300);
     int power = 60;
     JLabel powerLbl = new JLabel();
@@ -133,44 +134,36 @@ public class Tnnk extends JPanel implements KeyListener {
             }
         }
         points.clear();
-        if(starting||1==1) {
-            for(int i=0; i+1<list.size(); i++) {
+        for(int i=0; i+1<list.size(); i++) {
 
-                    O o = new O();
+            double v = (double)list.get(i+1).x;
+            double u = -(double)list.get(i+1).y;
+            double t = (double)list.get(i).x;
 
-                    double v = (double)list.get(i+1).x;
-                    double u = -(double)list.get(i+1).y;
-                    double t = (double)list.get(i).x;
-                    
-                    double w = 0d;
-                    
-                    double m = 0d;
-                    double y1 = 0d;
-                    
-                    m = (u-(-1*(double)list.get(i).y))/(v - t);
-                    //System.out.println(m+"slope");
-                    
-                    for(int j=1; t+j<list.get(i+1).x; j++) {
-                        w = t + j;
+            double w = 0d;
 
-                        y1 = u - m*(w - t);
+            double m = 0d;
+            double y1 = 0d;
 
-                        y1 = Math.round(y1);
+            m = (u-(-1*(double)list.get(i).y))/(v - t);
 
-                        int x = (int) w;
-                        int y = -(int) y1;
+            for(int j=(int) t; j<v; j++) {
+                O o = new O();
 
-                        o.x = x;
-                        o.y = y;
+                w = j;
 
-                        points.add(o);
-                    }
+                y1 = u - m*(v - w);
+
+                y1 = Math.round(y1);
+
+                int x = (int) w;
+                int y = -(int) y1;
+
+                o.x = x;
+                o.y = y;
+
+                points.add(o);
             }
-        }
-        //System.out.println(points.size());
-        for(int i=0; i<points.size(); i++) {
-            g.setColor(Color.ORANGE);
-            g.drawOval(points.get(i).x, points.get(i).y, 1, 1);
         }
         if(starting)
         for(int i=0; i<122; i++) {
@@ -188,23 +181,46 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         if(starting)
         for(int i=0; i<points.size(); i++) {
-            O o = new O();
-            o.x = points.get(i).x;
-            o.y = points.get(i).y-60;
-            enemies.add(o);
+            int v = rand.nextInt(80);
+            if(v == 0) {
+                O o = new O();
+                o.x = points.get(i).x;
+                o.y = points.get(i).y;
+                enemies.add(o);
+            } else {
+                O o = new O();
+                o.x = -1000;
+                o.y = -1111;
+                enemies.add(o);
+            }
         }
-        for(int i=0; i<enemies.size(); i++) {
+        for(int i=0; i<points.size(); i++) {
             try {
-                enemies.get(i).x = points.get(i).x;
-                enemies.get(i).y = points.get(i).y - 60;
+                if(enemies.get(i).x != -1000) {
+                    enemies.get(i).x = points.get(i).x-25;
+                    enemies.get(i).y = points.get(i).y-40;
+                }
             } catch(Exception e) {}
         }
         for(int i=0; i<enemies.size(); i++) {
             try {
                 ImageIcon ii = new ImageIcon(this.getClass().getResource("prisoner.gif_c200"));
                 Image im = ii.getImage();
-                g2.drawImage(im, enemies.get(i).x, enemies.get(i).y, 60, 120, null);
+                g2.drawImage(im, enemies.get(i).x, enemies.get(i).y, 40, 60, null);
             } catch(Exception e) {}
+        }
+        if(starting)
+            for(int i=0; i<100; i++) {
+                O o = new O();
+                o.x = rand.nextInt(1200);
+                o.y = 600 + rand.nextInt(200);
+                trees.add(o);
+            }
+        for(int i=0; i<trees.size(); i++) {
+            g.setColor(Color.GREEN);
+            g.fillRect(trees.get(i).x, trees.get(i).y, 10, 10);
+            g.setColor(new Color(200, 100, 50));
+            g.fillRect(trees.get(i).x, trees.get(i).y+10, 10, 20);
         }
         if(starting)
             starting = false;
@@ -334,7 +350,7 @@ public class Tnnk extends JPanel implements KeyListener {
                     
                     m = (u-(-1*(double)list.get(i).y))/(v - t);
                     double c = y1 - m*x1;
-                if(Math.abs((ballY - c)/(ballX) - m) <= 1.0 && (Math.abs(ballX - x1) < 20 && Math.abs(ballY - y1) < 20)) {
+                if(Math.abs((ballY - c)/(ballX) - m) <= 1.0 && (Math.abs(ballX - x1) < 10 && Math.abs(ballY - y1) < 10)) {
                     
                     try {
                         drawExplosion((int)ballX,(int)ballY);
