@@ -13,6 +13,8 @@ public class Tnnk extends JPanel implements KeyListener {
     Graphics g = null;    
     ArrayList<O> list = new ArrayList<>();
     ArrayList<O> list2 = new ArrayList<>();
+    ArrayList<O> enemies = new ArrayList<>();
+    ArrayList<O> points = new ArrayList<>();
     Tnk tnk = new Tnk(100, 300);
     int power = 60;
     JLabel powerLbl = new JLabel();
@@ -90,7 +92,6 @@ public class Tnnk extends JPanel implements KeyListener {
                 }
             }
         };
-        
         t.start();
     }
 
@@ -99,6 +100,8 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting) {
             list.clear();
             list2.clear();
+
+            enemies.clear();
         }
 
         for(int i=0; i<801; i++) {
@@ -129,6 +132,46 @@ public class Tnnk extends JPanel implements KeyListener {
                 } catch(Exception e) {}
             }
         }
+        points.clear();
+        if(starting||1==1) {
+            for(int i=0; i+1<list.size(); i++) {
+
+                    O o = new O();
+
+                    double v = (double)list.get(i+1).x;
+                    double u = -(double)list.get(i+1).y;
+                    double t = (double)list.get(i).x;
+                    
+                    double w = 0d;
+                    
+                    double m = 0d;
+                    double y1 = 0d;
+                    
+                    m = (u-(-1*(double)list.get(i).y))/(v - t);
+                    //System.out.println(m+"slope");
+                    
+                    for(int j=1; t+j<list.get(i+1).x; j++) {
+                        w = t + j;
+
+                        y1 = u - m*(w - t);
+
+                        y1 = Math.round(y1);
+
+                        int x = (int) w;
+                        int y = -(int) y1;
+
+                        o.x = x;
+                        o.y = y;
+
+                        points.add(o);
+                    }
+            }
+        }
+        //System.out.println(points.size());
+        for(int i=0; i<points.size(); i++) {
+            g.setColor(Color.ORANGE);
+            g.drawOval(points.get(i).x, points.get(i).y, 1, 1);
+        }
         if(starting)
         for(int i=0; i<122; i++) {
             int v = 20 + rand.nextInt(130);
@@ -141,6 +184,26 @@ public class Tnnk extends JPanel implements KeyListener {
         for(int i=0; i<list2.size(); i++) {
             try {
                 g2.drawOval(list2.get(i).x, list2.get(i).y, 1, 1);
+            } catch(Exception e) {}
+        }
+        if(starting)
+        for(int i=0; i<points.size(); i++) {
+            O o = new O();
+            o.x = points.get(i).x;
+            o.y = points.get(i).y-60;
+            enemies.add(o);
+        }
+        for(int i=0; i<enemies.size(); i++) {
+            try {
+                enemies.get(i).x = points.get(i).x;
+                enemies.get(i).y = points.get(i).y - 60;
+            } catch(Exception e) {}
+        }
+        for(int i=0; i<enemies.size(); i++) {
+            try {
+                ImageIcon ii = new ImageIcon(this.getClass().getResource("prisoner.gif_c200"));
+                Image im = ii.getImage();
+                g2.drawImage(im, enemies.get(i).x, enemies.get(i).y, 60, 120, null);
             } catch(Exception e) {}
         }
         if(starting)
@@ -173,6 +236,17 @@ public class Tnnk extends JPanel implements KeyListener {
         g.drawString("to shoot, press spacebar", 100, 150);
 
         tnk.drawMe();
+    }
+
+    private void drawExplosion(int x, int y) {
+        java.awt.Image imgFb = null;
+
+        String imageFb = "explosion.gif";
+
+        javax.swing.ImageIcon iFb = new javax.swing.ImageIcon(this.getClass().getResource(imageFb));
+        imgFb = iFb.getImage();
+
+        g.drawImage(imgFb, x, y, 100, 100, null);
     }
 
     @Override
@@ -250,31 +324,40 @@ public class Tnnk extends JPanel implements KeyListener {
                 x2 = list.get(i+1).x;
                 x1 = list.get(i).x;
                 double m = (double)(y2 - y1)/(double)(x2 - x1);
-                double c = y1 - m*x1;
                 
-                if(Math.abs((ballY - c)/(ballX) - m) < 0.7 && (Math.abs(ballX - x1) < 20 && Math.abs(ballY - y1) < 20)) {
+                    double v = (double)list.get(i+1).x;
+                    double u = -(double)list.get(i+1).y;
+                    double t = (double)list.get(i).x;
                     
-                    list.remove(list.get(i+1));
+                    double w = 0d;
                     
-                    O l = new O();
-                    l.x = (int) ballX + 2;
-                    l.y = (int) ballY+30;
-                    list.add(i+1, l);
-                    l = new O();
-                    l.x = (int) ballX + 20;
-                    l.y = (int) ballY + 120;
-                    list.add(i+2, l);
+                    
+                    m = (u-(-1*(double)list.get(i).y))/(v - t);
+                    double c = y1 - m*x1;
+                if(Math.abs((ballY - c)/(ballX) - m) <= 1.0 && (Math.abs(ballX - x1) < 20 && Math.abs(ballY - y1) < 20)) {
+                    
+                    try {
+                        drawExplosion((int)ballX,(int)ballY);
+                        
+                        list.remove(list.get(i+1));
 
-                    list.get(i).x = list.get(i).x - 50;
-                    list.get(i).y = l.y - 50;
-                    
-                    time = -1;
-                    
-                    timer.stop();
-                                
-                    shooting = false;
-                    
-                    return;
+                        O l = new O();
+                        l.x = (int) ballX + 2;
+                        l.y = (int) ballY+30;
+                        list.add(i+1, l);
+                        l = new O();
+                        l.x = (int) ballX + 20;
+                        l.y = (int) ballY + 120;
+                        list.add(i+2, l);
+
+                        list.get(i).x = list.get(i).x - 150;
+                        list.get(i).y = l.y + 50;
+
+                        time = -1;
+
+                        shooting = false;
+
+                    } catch(Exception e) {}
                 }
             } catch(Exception e) {}
         }
