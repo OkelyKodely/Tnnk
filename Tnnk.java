@@ -123,16 +123,6 @@ public class Tnnk extends JPanel implements KeyListener {
             }
         }
         g.setColor(new Color(140, 250, 70));
-        Graphics2D g2 = (Graphics2D) g;
-        for(int j=0; j<800; j++){
-            g2.setColor(new Color(0, j/4 + 55, 0));
-            for(int i=0; i<list.size(); i++) {
-                try {
-                    g2.setStroke(new BasicStroke(3));
-                    g2.drawLine(list.get(i).x, list.get(i).y+j, list.get(i+1).x, list.get(i+1).y+j);
-                } catch(Exception e) {}
-            }
-        }
         points.clear();
         for(int i=0; i+1<list.size(); i++) {
 
@@ -165,6 +155,24 @@ public class Tnnk extends JPanel implements KeyListener {
                 points.add(o);
             }
         }
+        Graphics2D g2 = (Graphics2D) g;
+        if(starting)
+            for(int j=0; j<800; j++) {
+                for(int i=0; i<points.size(); i++) {
+                    g2.setColor(new Color(i/8, j/4 + 55, i/8));
+                    g.drawOval(points.get(i).x, points.get(i).y+j, 1, 1);
+                }
+            }
+        else
+            for(int j=0; j<800; j++){
+                for(int i=0; i<list.size(); i++) {
+                    try {
+                        g2.setColor(new Color(i*10, j/4 + 55, i*10));
+                        g2.setStroke(new BasicStroke(3));
+                        g2.drawLine(list.get(i).x, list.get(i).y+j, list.get(i+1).x, list.get(i+1).y+j);
+                    } catch(Exception e) {}
+                }
+            }
         if(starting)
         for(int i=0; i<122; i++) {
             int v = 20 + rand.nextInt(130);
@@ -182,7 +190,7 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
         for(int i=0; i<points.size(); i++) {
             int v = rand.nextInt(80);
-            if(v == 0) {
+            if(v == 0 && i > 300) {
                 O o = new O();
                 o.x = points.get(i).x;
                 o.y = points.get(i).y;
@@ -331,7 +339,7 @@ public class Tnnk extends JPanel implements KeyListener {
         ballX = startX + (xSpeed * time);
         ballY = startY - ((ySpeed *time)-(1.1 *G * Math.pow(time, 2))) ;
         time += deltaTime;
-
+        
         for(int i=0; i<list.size(); i++) {
             try {
                 int y2, y1, x2, x1;
@@ -350,7 +358,7 @@ public class Tnnk extends JPanel implements KeyListener {
                     
                     m = (u-(-1*(double)list.get(i).y))/(v - t);
                     double c = y1 - m*x1;
-                if(Math.abs((ballY - c)/(ballX) - m) <= 1.0 && (Math.abs(ballX - x1) < 10 && Math.abs(ballY - y1) < 10)) {
+                if(Math.abs((ballY - c)/(ballX) - m) <= 0.6 && (Math.abs(ballX - x1) < 13 && Math.abs(ballY - y1) < 13)) {
                     
                     try {
                         drawExplosion((int)ballX,(int)ballY);
@@ -378,6 +386,40 @@ public class Tnnk extends JPanel implements KeyListener {
             } catch(Exception e) {}
         }
         
+//        for(int i=0; i<points.size(); i++) {
+//            if((Math.abs(ballX - points.get(i).x) < 1 && Math.abs(ballY - points.get(i).y) < 1)) {
+//
+//                O o = new O();
+//                o.x = points.get(i).x;
+//                o.y = points.get(i).y+30;
+//
+//                for(int j=0; j<list.size(); j++) {
+//                    if((Math.abs(ballX - list.get(j).x) < 1 && Math.abs(ballY - list.get(j).y) < 1)) {
+//                        drawExplosion((int)ballX,(int)ballY);
+//                        
+//                        list.remove(list.get(j+1));
+//
+//                        O l = new O();
+//                        l.x = (int) ballX + 2;
+//                        l.y = (int) ballY+30;
+//                        list.add(j+1, l);
+//                        l = new O();
+//                        l.x = (int) ballX + 20;
+//                        l.y = (int) ballY + 120;
+//                        list.add(j+2, l);
+//
+//                        list.get(j).x = list.get(j).x - 150;
+//                        list.get(j).y = l.y + 50;
+//                        break;
+//                    }
+//                }
+//
+//                time = -1;
+//
+//                shooting = false;
+//            }
+//        }
+
         repaint();
     }
 
