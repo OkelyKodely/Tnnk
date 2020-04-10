@@ -190,7 +190,7 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
         for(int i=0; i<points.size(); i++) {
             int v = rand.nextInt(80);
-            if(v == 0 && i > 300) {
+            if(v == 0) {
                 O o = new O();
                 o.x = points.get(i).x;
                 o.y = points.get(i).y;
