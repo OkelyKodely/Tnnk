@@ -111,7 +111,7 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         Random rand = new Random();
         if(starting)
-        for(int i=0; i<22; i++) {
+        for(int i=0; i<32; i++) {
             int v = 200 + rand.nextInt(130);
             O o = new O();
             o.x = i*60;
