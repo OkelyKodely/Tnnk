@@ -157,14 +157,15 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         Graphics2D g2 = (Graphics2D) g;
 //        if(starting)
-            for(int j=0; j<800; j++) {
+//            for(int j=0; j<800; j++) {
                 for(int i=0; i<points.size(); i++) {
                     try {
-                        g2.setColor(new Color(i/8, j/4 + 55, i/8));
-                        g.drawOval(points.get(i).x, points.get(i).y+j, 1, 1);
+                        //g2.setColor(new Color(i/8, j/4 + 55, i/8));
+                        g2.setColor(Color.GREEN);
+                        g2.fillOval(points.get(i).x, points.get(i).y, 10, 10);
                     } catch(Exception e) {}
                 }
-            }
+//            }
 //        else
 //            for(int j=0; j<800; j++){
 //                for(int i=0; i<list.size(); i++) {
@@ -233,7 +234,7 @@ public class Tnnk extends JPanel implements KeyListener {
             g.fillRect(trees.get(i).x, trees.get(i).y+10, 10, 20);
         }
         g.setColor(Color.BLUE);
-        g.fillOval(100, 600, 1000, 150);
+        g.fillRoundRect(100, 600, 1000, 150, 50, 50);
         if(starting)
             starting = false;
         
