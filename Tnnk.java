@@ -222,7 +222,7 @@ public class Tnnk extends JPanel implements KeyListener {
             g.setColor(new Color(200, 100, 50));
             g.fillRect(trees.get(i).x, trees.get(i).y+10, 10, 20);
         }
-        g.setColor(Color.BLUE);
+        g.setColor(new Color(100, 100, 255));
         g.fillRoundRect(100, 600, 1000, 150, 50, 50);
         if(starting)
             starting = false;
@@ -357,7 +357,7 @@ public class Tnnk extends JPanel implements KeyListener {
                     try {
                         drawExplosion((int)ballX,(int)ballY);
                         
-                        //list.remove(list.get(i+1));
+                        list.remove(list.get(i+1));
 
                         O l = new O();
                         l.x = (int) ballX + 2;
