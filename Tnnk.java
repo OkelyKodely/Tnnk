@@ -32,6 +32,7 @@ public class Tnnk extends JPanel implements KeyListener {
     double aangle = 0;
     boolean shooting = false;
     Polygon ppp = new Polygon();
+    Random rand = new Random();
 
     class O {
         int x, y;
@@ -86,10 +87,11 @@ public class Tnnk extends JPanel implements KeyListener {
 
         Thread t = new Thread() {
             public void run() {
+                Graphics2D g2 = (Graphics2D) g;
                 while(true) {
                     tnk.drawMe();
                     try {
-                        Thread.sleep(100);
+                        Thread.sleep(1000);
                     } catch(Exception e) {}
                 }
             }
@@ -98,6 +100,7 @@ public class Tnnk extends JPanel implements KeyListener {
     }
 
     public void paint(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
 
         if(starting) {
             list.clear();
@@ -110,7 +113,6 @@ public class Tnnk extends JPanel implements KeyListener {
             g.setColor(new Color(100, 155, 55+i/4));
             g.drawLine(0, i, 1200, i);
         }
-        Random rand = new Random();
         if(starting)
         for(int i=0; i<45; i++) {
             int v = 200 + rand.nextInt(100);
@@ -156,7 +158,6 @@ public class Tnnk extends JPanel implements KeyListener {
                 points.add(o);
             }
         }
-        Graphics2D g2 = (Graphics2D) g;
         if(starting)
         for(int i=0; i<122; i++) {
             int v = 20 + rand.nextInt(130);
@@ -177,8 +178,23 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         ppp.addPoint(1200, 800);
         ppp.addPoint(0, 800);
-        g2.setColor(new Color(10, 50, 10));
+        GradientPaint brownToSand = new GradientPaint(50, 50, new Color(102, 51, 0),
+            800, 100, new Color(76, 70, 50));
+        g2.setPaint(brownToSand);
         g2.fillPolygon(ppp);
+        Polygon it = new Polygon();
+        for(int i=0; i< 10; i++) {
+            int y = 600 + rand.nextInt(30);
+            int x = 100 + i*100 + rand.nextInt(30);
+            it.addPoint(x, y);
+        }
+        it.addPoint(1100, 700);
+        it.addPoint(500, 670);
+        it.addPoint(100, 700);
+        GradientPaint greenToBlue = new GradientPaint(150, 100, new Color(200, 255, 200),
+            900, 100, Color.BLUE);
+        g2.setPaint(greenToBlue);
+        g2.fillPolygon(it);
         if(starting)
         for(int i=0; i<points.size(); i++) {
             int v = rand.nextInt(40);
@@ -217,13 +233,20 @@ public class Tnnk extends JPanel implements KeyListener {
                 trees.add(o);
             }
         for(int i=0; i<trees.size(); i++) {
-            g.setColor(Color.GREEN);
-            g.fillRect(trees.get(i).x, trees.get(i).y, 10, 10);
             g.setColor(new Color(200, 100, 50));
-            g.fillRect(trees.get(i).x, trees.get(i).y+10, 10, 20);
+            g.fillRect(trees.get(i).x+10, trees.get(i).y+25, 4, 45);
         }
-        g.setColor(new Color(100, 100, 255));
-        g.fillRoundRect(100, 600, 1000, 150, 50, 50);
+        for(int i=0; i<trees.size(); i++) {
+            Polygon tres = new Polygon();
+            for(int j=0; j<30; j++) {
+                O o = new O();
+                o.x = trees.get(i).x - 15 + rand.nextInt(14) + j;
+                o.y = trees.get(i).y + rand.nextInt(14) + j;
+                tres.addPoint(o.x, o.y);
+            }
+            g2.setColor(Color.GREEN);
+            g2.fillPolygon(tres);
+        }
         if(starting)
             starting = false;
         
@@ -240,7 +263,7 @@ public class Tnnk extends JPanel implements KeyListener {
 
         g.setFont(new Font("arial", Font.PLAIN, 25));
 
-        g.drawString("F L A T L A N D E R", 100, 30);
+        g.drawString("Canton F L A T L A N D E R w/animation", 100, 30);
         
         g.setFont(new Font("arial", Font.PLAIN, 15));
         
@@ -249,9 +272,9 @@ public class Tnnk extends JPanel implements KeyListener {
 
         g.setColor(Color.BLACK);
         
-        g.drawString("power is left/right keys", 100, 90);
-        g.drawString("angle is up/down keys", 100, 120);
-        g.drawString("to shoot, press spacebar", 100, 150);
+        g.drawString("Power: LEFT / RIGHT", 100, 90);
+        g.drawString("Angle: UP / DOWN", 100, 120);
+        g.drawString("To shoot press SPACE", 100, 150);
 
         tnk.drawMe();
     }
@@ -264,7 +287,7 @@ public class Tnnk extends JPanel implements KeyListener {
         javax.swing.ImageIcon iFb = new javax.swing.ImageIcon(this.getClass().getResource(imageFb));
         imgFb = iFb.getImage();
 
-        g.drawImage(imgFb, x, y, 100, 100, null);
+        g.drawImage(imgFb, x, y, 200, 200, null);
     }
 
     @Override
@@ -385,40 +408,6 @@ public class Tnnk extends JPanel implements KeyListener {
                 }
             } catch(Exception e) {}
         }
-        
-//        for(int i=0; i<points.size(); i++) {
-//            if((Math.abs(ballX - points.get(i).x) < 1 && Math.abs(ballY - points.get(i).y) < 1)) {
-//
-//                O o = new O();
-//                o.x = points.get(i).x;
-//                o.y = points.get(i).y+30;
-//
-//                for(int j=0; j<list.size(); j++) {
-//                    if((Math.abs(ballX - list.get(j).x) < 1 && Math.abs(ballY - list.get(j).y) < 1)) {
-//                        drawExplosion((int)ballX,(int)ballY);
-//                        
-//                        list.remove(list.get(j+1));
-//
-//                        O l = new O();
-//                        l.x = (int) ballX + 2;
-//                        l.y = (int) ballY+30;
-//                        list.add(j+1, l);
-//                        l = new O();
-//                        l.x = (int) ballX + 20;
-//                        l.y = (int) ballY + 120;
-//                        list.add(j+2, l);
-//
-//                        list.get(j).x = list.get(j).x - 150;
-//                        list.get(j).y = l.y + 50;
-//                        break;
-//                    }
-//                }
-//
-//                time = -1;
-//
-//                shooting = false;
-//            }
-//        }
 
         repaint();
     }
@@ -451,7 +440,7 @@ public class Tnnk extends JPanel implements KeyListener {
     
     void setGUI() {
  
-        j.setTitle("F L A T L A N D E R");
+        j.setTitle("Canton F L A T L A N D E R w/animation");
         
         j.setLayout(null);
         j.setBounds(0, 0, 1200, 800);
