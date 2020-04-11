@@ -349,15 +349,15 @@ public class Tnnk extends JPanel implements KeyListener {
                 x1 = list.get(i).x;
                 double m = (double)(y2 - y1)/(double)(x2 - x1);
                 
-                    double v = (double)list.get(i+1).x;
-                    double u = -(double)list.get(i+1).y;
-                    double t = (double)list.get(i).x;
+                double v = (double)list.get(i+1).x;
+                double u = -(double)list.get(i+1).y;
+                double t = (double)list.get(i).x;
+
+                double w = 0d;
                     
-                    double w = 0d;
-                    
-                    
-                    m = (u-(-1*(double)list.get(i).y))/(v - t);
-                    double c = y1 - m*x1;
+                m = (u-(-1*(double)list.get(i).y))/(v - t);
+                double c = y1 - m*x1;
+
                 if(Math.abs((ballY - c)/(ballX) - m) <= 0.6 && (Math.abs(ballX - x1) < 13 && Math.abs(ballY - y1) < 13)) {
                     
                     try {
@@ -374,8 +374,14 @@ public class Tnnk extends JPanel implements KeyListener {
                         l.y = (int) ballY + 120;
                         list.add(i+2, l);
 
-                        list.get(i).x = list.get(i).x - 150;
+                        list.get(i).x = list.get(i).x - 50;
                         list.get(i).y = l.y + 50;
+
+                        list.get(i+1).x = list.get(i+1).x - 50;
+                        list.get(i+1).y = l.y + 50;
+
+                        list.get(i+2).x = list.get(i+2).x - 50;
+                        list.get(i+2).y = l.y + 50;
 
                         time = -1;
 
