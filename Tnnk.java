@@ -31,6 +31,7 @@ public class Tnnk extends JPanel implements KeyListener {
     int angle = 0;
     double aangle = 0;
     boolean shooting = false;
+    Polygon ppp = new Polygon();
 
     class O {
         int x, y;
@@ -156,34 +157,6 @@ public class Tnnk extends JPanel implements KeyListener {
             }
         }
         Graphics2D g2 = (Graphics2D) g;
-//        if(starting)
-//            for(int j=0; j<800; j++) {
-                for(int i=0; i<points.size(); i++) {
-                    try {
-                        //g2.setColor(new Color(i/8, j/4 + 55, i/8));
-                        g2.setColor(Color.GREEN);
-                        g2.fillOval(points.get(i).x, points.get(i).y, 1, 1);
-                    } catch(Exception e) {}
-                }
-//            }
-//        else
-//            for(int j=0; j<800; j++){
-//                for(int i=0; i<list.size(); i++) {
-//                    try {
-//                        g2.setColor(new Color(i*10, j/4 + 55, i*10));
-//                        g2.setStroke(new BasicStroke(3));
-//                        g2.drawLine(list.get(i).x, list.get(i).y+j, list.get(i+1).x, list.get(i+1).y+j);
-//                    } catch(Exception e) {}
-//                }
-//            }
-                for(int i=0; i<points.size(); i++) {
-                    try {
-                        //g2.setColor(new Color(i/8, j/4 + 55, i/8));
-                        g2.setColor(Color.GREEN);
-                        g2.drawLine(points.get(i).x, points.get(i).y, points.get(i+1).x, points.get(i+1).y);
-                    } catch(Exception e) {}
-                }
-
         if(starting)
         for(int i=0; i<122; i++) {
             int v = 20 + rand.nextInt(130);
@@ -198,6 +171,14 @@ public class Tnnk extends JPanel implements KeyListener {
                 g2.drawOval(list2.get(i).x, list2.get(i).y, 1, 1);
             } catch(Exception e) {}
         }
+        ppp = new Polygon();
+        for(int i=0; i<points.size(); i++) {
+            ppp.addPoint(points.get(i).x, points.get(i).y);
+        }
+        ppp.addPoint(1200, 800);
+        ppp.addPoint(0, 800);
+        g2.setColor(new Color(10, 50, 10));
+        g2.fillPolygon(ppp);
         if(starting)
         for(int i=0; i<points.size(); i++) {
             int v = rand.nextInt(40);
