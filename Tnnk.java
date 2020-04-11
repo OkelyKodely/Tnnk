@@ -377,10 +377,10 @@ public class Tnnk extends JPanel implements KeyListener {
                         list.get(i).x = list.get(i).x - 50;
                         list.get(i).y = l.y + 50;
 
-                        list.get(i+1).x = list.get(i+1).x - 50;
+                        list.get(i+1).x = list.get(i+1).x;
                         list.get(i+1).y = l.y + 50;
 
-                        list.get(i+2).x = list.get(i+2).x - 50;
+                        list.get(i+2).x = list.get(i+2).x;
                         list.get(i+2).y = l.y + 50;
 
                         time = -1;
