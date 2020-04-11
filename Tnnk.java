@@ -11,11 +11,11 @@ public class Tnnk extends JPanel implements KeyListener {
 
     JFrame j = new JFrame();
     Graphics g = null;    
-    ArrayList<O> list = new ArrayList<>();
-    ArrayList<O> list2 = new ArrayList<>();
-    ArrayList<O> enemies = new ArrayList<>();
-    ArrayList<O> points = new ArrayList<>();
-    ArrayList<O> trees = new ArrayList<>();
+    ArrayList<Point> list = new ArrayList<>();
+    ArrayList<Point> list2 = new ArrayList<>();
+    ArrayList<Point> enemies = new ArrayList<>();
+    ArrayList<Point> points = new ArrayList<>();
+    ArrayList<Point> trees = new ArrayList<>();
     Tnk tnk = new Tnk(100, 300);
     int power = 110;
     JLabel powerLbl = new JLabel();
@@ -34,7 +34,7 @@ public class Tnnk extends JPanel implements KeyListener {
     Polygon ppp = new Polygon();
     Random rand = new Random();
 
-    class O {
+    class Point {
         int x, y;
     }
     
@@ -116,7 +116,7 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
         for(int i=0; i<45; i++) {
             int v = 200 + rand.nextInt(100);
-            O o = new O();
+            Point o = new Point();
             o.x = i*30;
             o.y = v;
             list.add(o);
@@ -141,7 +141,7 @@ public class Tnnk extends JPanel implements KeyListener {
             m = (u-(-1*(double)list.get(i).y))/(v - t);
 
             for(int j=(int) t; j<v; j++) {
-                O o = new O();
+                Point o = new Point();
 
                 w = j;
 
@@ -161,7 +161,7 @@ public class Tnnk extends JPanel implements KeyListener {
         if(starting)
         for(int i=0; i<122; i++) {
             int v = 20 + rand.nextInt(130);
-            O o = new O();
+            Point o = new Point();
             o.x = 20 + rand.nextInt(1100);
             o.y = v;
             list2.add(o);
@@ -169,7 +169,7 @@ public class Tnnk extends JPanel implements KeyListener {
         g2.setColor(Color.WHITE);
         for(int i=0; i<list2.size(); i++) {
             try {
-                g2.drawOval(list2.get(i).x, list2.get(i).y, 1, 1);
+                g2.drawOval(list2.get(i).x, list2.get(i).y, 2, 2);
             } catch(Exception e) {}
         }
         ppp = new Polygon();
@@ -199,12 +199,12 @@ public class Tnnk extends JPanel implements KeyListener {
         for(int i=0; i<points.size(); i++) {
             int v = rand.nextInt(40);
             if(v == 0) {
-                O o = new O();
+                Point o = new Point();
                 o.x = points.get(i).x;
                 o.y = points.get(i).y;
                 enemies.add(o);
             } else {
-                O o = new O();
+                Point o = new Point();
                 o.x = -1000;
                 o.y = -1111;
                 enemies.add(o);
@@ -220,14 +220,14 @@ public class Tnnk extends JPanel implements KeyListener {
         }
         for(int i=0; i<enemies.size(); i++) {
             try {
-                ImageIcon ii = new ImageIcon(this.getClass().getResource("prisoner.gif_c200"));
+                ImageIcon ii = new ImageIcon(this.getClass().getResource("enemysoldier.gif"));
                 Image im = ii.getImage();
                 g2.drawImage(im, enemies.get(i).x, enemies.get(i).y, 40, 60, null);
             } catch(Exception e) {}
         }
         if(starting)
             for(int i=0; i<50; i++) {
-                O o = new O();
+                Point o = new Point();
                 o.x = rand.nextInt(1200);
                 o.y = 500 + rand.nextInt(200);
                 trees.add(o);
@@ -239,7 +239,7 @@ public class Tnnk extends JPanel implements KeyListener {
         for(int i=0; i<trees.size(); i++) {
             Polygon tres = new Polygon();
             for(int j=0; j<30; j++) {
-                O o = new O();
+                Point o = new Point();
                 o.x = trees.get(i).x - 15 + rand.nextInt(14) + j;
                 o.y = trees.get(i).y + rand.nextInt(14) + j;
                 tres.addPoint(o.x, o.y);
@@ -382,11 +382,11 @@ public class Tnnk extends JPanel implements KeyListener {
                         
                         list.remove(list.get(i+1));
 
-                        O l = new O();
+                        Point l = new Point();
                         l.x = (int) ballX + 2;
                         l.y = (int) ballY+30;
                         list.add(i+1, l);
-                        l = new O();
+                        l = new Point();
                         l.x = (int) ballX + 20;
                         l.y = (int) ballY + 30;
                         list.add(i+2, l);
