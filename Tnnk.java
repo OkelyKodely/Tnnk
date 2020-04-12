@@ -9,6 +9,7 @@ import javax.swing.*;
 
 public class Tnnk extends JPanel implements KeyListener {
 
+    Color ballColor = Color.RED;
     JFrame j = new JFrame();
     Graphics g = null;    
     ArrayList<Point> list = new ArrayList<>();
@@ -114,10 +115,10 @@ public class Tnnk extends JPanel implements KeyListener {
             g.drawLine(0, i, 1200, i);
         }
         if(starting)
-        for(int i=0; i<45; i++) {
-            int v = 200 + rand.nextInt(100);
+        for(int i=0; i<24; i++) {
+            int v = 200 + rand.nextInt(50);
             Point o = new Point();
-            o.x = i*30;
+            o.x = i*50;
             o.y = v;
             list.add(o);
             
@@ -314,7 +315,7 @@ public class Tnnk extends JPanel implements KeyListener {
             if(!shooting) {
                 shooting = true;
                 time = 0;
-                for(int i=0; i<(int)((double)power/(double)12); i++) {
+                //for(int i=0; i<(int)((double)power/(double)12); i++) {
                     ballX= lastPointX = startX = tnk.x + 90;
                     ballY = lastPointY = startY = tnk.y - 30;
                     getUserInput();
@@ -329,7 +330,7 @@ public class Tnnk extends JPanel implements KeyListener {
                                 Graphics2D g2d = (Graphics2D) g;
                                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                                         RenderingHints.VALUE_ANTIALIAS_ON);
-                                g2d.setColor(Color.RED);
+                                g2d.setColor(ballColor);
                                 g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
 
                                 repaint();
@@ -343,7 +344,7 @@ public class Tnnk extends JPanel implements KeyListener {
                         }
                     });
                     timer.start();
-                }
+                //}
             }
         }
         repaint();
@@ -351,70 +352,144 @@ public class Tnnk extends JPanel implements KeyListener {
         tnk.drawMe();
     }
 
+    int diffX = 111110, diffY = 111110;
+
     private void moveBall() {
 
         ballX = startX + (xSpeed * time);
-        ballY = startY - ((ySpeed *time)-(1.0 *G * Math.pow(time, 2))) ;
+        ballY = startY - ((ySpeed *time)-(100.0 *G * Math.pow(time, 2))) ;
         time += deltaTime;
         
-        for(int i=0; i<list.size(); i++) {
-            try {
-                int y2, y1, x2, x1;
-                y2 = list.get(i+1).y;
-                y1 = list.get(i).y;
-                x2 = list.get(i+1).x;
-                x1 = list.get(i).x;
-                double m = (double)(y2 - y1)/(double)(x2 - x1);
-                
-                double v = (double)list.get(i+1).x;
-                double u = -(double)list.get(i+1).y;
-                double t = (double)list.get(i).x;
-
-                double w = 0d;
-                    
-                m = (u-(-1*(double)list.get(i).y))/(v - t);
-                double c = y1 - m*x1;
-
-                if(Math.abs((ballY - c)/(ballX) - m) <= 0.6 && (Math.abs(ballX - x1) < 13 && Math.abs(ballY - y1) < 13)) {
-                    
-                    try {
-                        drawExplosion((int)ballX,(int)ballY);
-                        
-                        list.remove(list.get(i+1));
-
-                        Point l = new Point();
-                        l.x = (int) ballX + 2;
-                        l.y = (int) ballY+30;
-                        list.add(i+1, l);
-                        l = new Point();
-                        l.x = (int) ballX + 20;
-                        l.y = (int) ballY + 30;
-                        list.add(i+2, l);
-
-                        list.get(i).x = list.get(i).x - 50;
-                        list.get(i).y = l.y + 30;
-
-                        list.get(i+1).x = list.get(i+1).x;
-                        list.get(i+1).y = l.y + 30;
-
-                        list.get(i+2).x = list.get(i+2).x;
-                        list.get(i+2).y = l.y + 30;
-
-                        time = -1;
-
-                        shooting = false;
-
-                    } catch(Exception e) {}
-                }
-            } catch(Exception e) {}
+        int minX = 111110, minY = 111110;
+        int j = -1;
+        int listFound = -1;
+        
+        int x = -10, y = -10;
+        
+        for(int i=0; i<points.size(); i++) {
+            int x2 = points.get(i).x;
+            int y2 = points.get(i).y;
+            if(ballX >= x2 && ballX <= x2 + 13 &&
+                    ballY >= y2 && ballY <= y2 + 13) {
+                x = x2;
+                y = y2;
+            }
         }
+        System.out.println("size: " + list.size());
+        
+        double dis = 0d;
+                
+        double ddis = 100000d;
+        
+        if(x >= 0 && y >= 0)
+        for(int xxxx=0; xxxx<list.size(); xxxx++) {
+            int x2 = list.get(xxxx).x;
+            int y2 = list.get(xxxx).y;
+
+            dis=Math. sqrt((x2-x)*(x2-x) + (y2-y)*(y2-y));
+
+            if(dis < ddis) {
+                minX = x2;
+                minY = y2;
+                ddis = dis;
+                listFound = xxxx;
+            }
+        }
+        
+        if(x >= 0 && y >= 0)
+            System.out.println(listFound + "   " + diffX + "," + diffY);
+        
+        if(x >= 0 && y >= 0) {
+            diffX = 111110; diffY = 111110;
+        }
+
+        if(x >= 0 && y >= 0)
+        if(minX != 111110 && minY != 111110) {
+            drawExplosion(minX,minY);
+
+            list.remove(list.get(listFound+1));
+
+            Point l = new Point();
+            l.x = (int) minX + 2;
+            l.y = (int) minY+30;
+            list.add(listFound+1, l);
+            l = new Point();
+            l.x = (int) minX + 20;
+            l.y = (int) minY + 30;
+            list.add(listFound+2, l);
+
+            list.get(listFound).x = list.get(listFound).x - 50;
+            list.get(listFound).y = l.y + 30;
+
+            list.get(listFound+1).x = list.get(listFound+1).x;
+            list.get(listFound+1).y = l.y + 30;
+
+            list.get(listFound+2).x = list.get(listFound+2).x;
+            list.get(listFound+2).y = l.y + 30;
+
+            time = -1;
+
+            shooting = false;
+        }
+        
+//        for(int i=0; i<list.size(); i++) {
+//            try {
+//                int y2, y1, x2, x1;
+//                y2 = list.get(i+1).y;
+//                y1 = list.get(i).y;
+//                x2 = list.get(i+1).x;
+//                x1 = list.get(i).x;
+//                double m = (double)(y2 - y1)/(double)(x2 - x1);
+//                
+//                double v = (double)list.get(i+1).x;
+//                double u = -(double)list.get(i+1).y;
+//                double t = (double)list.get(i).x;
+//
+//                double w = 0d;
+//                    
+//                m = (u-(-1*(double)list.get(i).y))/(v - t);
+//                double c = y1 - m*x1;
+//
+//                if(Math.abs((ballY - c)/(ballX) - m) <= 0.6 && (Math.abs(ballX - x1) < 13 && Math.abs(ballY - y1) < 13)) {
+//                    
+//                    try {
+//                        drawExplosion((int)ballX,(int)ballY);
+//                        
+//                        list.remove(list.get(i+1));
+//
+//                        Point l = new Point();
+//                        l.x = (int) ballX + 2;
+//                        l.y = (int) ballY+30;
+//                        list.add(i+1, l);
+//                        l = new Point();
+//                        l.x = (int) ballX + 20;
+//                        l.y = (int) ballY + 30;
+//                        list.add(i+2, l);
+//
+//                        list.get(i).x = list.get(i).x - 50;
+//                        list.get(i).y = l.y + 30;
+//
+//                        list.get(i+1).x = list.get(i+1).x;
+//                        list.get(i+1).y = l.y + 30;
+//
+//                        list.get(i+2).x = list.get(i+2).x;
+//                        list.get(i+2).y = l.y + 30;
+//
+//                        time = -1;
+//
+//                        shooting = false;
+//
+//                    } catch(Exception e) {}
+//                }
+//            } catch(Exception e) {}
+//        }
 
         repaint();
     }
 
     private void getUserInput() {
 
-        double speed = 0 + power;
+        double speed = 10 * power;
         xSpeed = speed * Math.cos(aangle * (Math.PI / 180));
         ySpeed = speed * Math.sin(aangle * (Math.PI / 180));
     }
