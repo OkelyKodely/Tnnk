@@ -2,38 +2,45 @@ package mount;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.*;
 import java.util.*;
 import javax.swing.Timer;
 import javax.swing.*;
 
 public class Tnnk extends JPanel implements KeyListener {
 
-    Color ballColor = Color.RED;
-    JFrame j = new JFrame();
-    Graphics g = null;    
     ArrayList<Point> list = new ArrayList<>();
     ArrayList<Point> list2 = new ArrayList<>();
     ArrayList<Point> enemies = new ArrayList<>();
     ArrayList<Point> points = new ArrayList<>();
     ArrayList<Point> trees = new ArrayList<>();
-    Tnk tnk = new Tnk(100, 300);
-    int power = 110;
-    JLabel powerLbl = new JLabel();
+
+    Tnk tnk;
+
     boolean starting = true;
-    static final double G = 9.8;
+
+    int power = 110;
     int animationSpeed = 5;
+    static final double G = 980d;
     static int size = 900, ballDiameter = 10;
     double startX, startY, ballX, ballY;
     double xSpeed, ySpeed, lastPointX, lastPointY;
     double time, deltaTime = 0.01 ;
     Timer timer;
+
     boolean s = true;
     int angle = 0;
     double aangle = 0;
+
     boolean shooting = false;
+
     Polygon ppp = new Polygon();
+
     Random rand = new Random();
+
+    int diffX = 111110, diffY = 111110;
+
+    Graphics g = null;    
+    JFrame j = new JFrame();
 
     class Point {
         int x, y;
@@ -263,11 +270,9 @@ public class Tnnk extends JPanel implements KeyListener {
         g.setColor(Color.BLUE);
 
         g.setFont(new Font("arial", Font.PLAIN, 25));
-
-        g.drawString("Canton F L A T L A N D E R w/animation", 100, 30);
+        g.drawString("F L A T L A N D E R w/animation", 100, 30);
         
         g.setFont(new Font("arial", Font.PLAIN, 15));
-        
         g.setColor(Color.RED);
         g.drawString("POWER: " + power + "   ANGLE: " + aangle, 100, 70);
 
@@ -276,8 +281,6 @@ public class Tnnk extends JPanel implements KeyListener {
         g.drawString("Power: LEFT / RIGHT", 100, 90);
         g.drawString("Angle: UP / DOWN", 100, 120);
         g.drawString("To shoot press SPACE", 100, 150);
-
-        tnk.drawMe();
     }
 
     private void drawExplosion(int x, int y) {
@@ -315,36 +318,33 @@ public class Tnnk extends JPanel implements KeyListener {
             if(!shooting) {
                 shooting = true;
                 time = 0;
-                //for(int i=0; i<(int)((double)power/(double)12); i++) {
-                    ballX= lastPointX = startX = tnk.x + 90;
-                    ballY = lastPointY = startY = tnk.y - 30;
-                    getUserInput();
+                ballX= lastPointX = startX = tnk.x + 90;
+                ballY = lastPointY = startY = tnk.y - 30;
+                getUserInput();
 
-                    timer = new Timer(animationSpeed, new ActionListener() {
-                        @Override
-                        public void actionPerformed(ActionEvent event) {
+                timer = new Timer(animationSpeed, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent event) {
 
-                            if(time != -1) {
-                                moveBall();
+                        if(time != -1) {
+                            moveBall();
 
-                                Graphics2D g2d = (Graphics2D) g;
-                                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                                        RenderingHints.VALUE_ANTIALIAS_ON);
-                                g2d.setColor(ballColor);
-                                g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
+                            Graphics2D g2d = (Graphics2D) g;
+                            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                                    RenderingHints.VALUE_ANTIALIAS_ON);
+                            g2d.setColor(Color.BLUE);
+                            g2d.fillOval((int)ballX,(int)ballY,ballDiameter,ballDiameter);
 
-                                repaint();
+                            repaint();
 
-                                if(! inBounds()) {
-                                    timer.stop();
-
-                                    shooting = false;
-                                }
+                            if(!inBounds()) {
+                                timer.stop();
+                                shooting = false;
                             }
                         }
-                    });
-                    timer.start();
-                //}
+                    }
+                });
+                timer.start();
             }
         }
         repaint();
@@ -352,16 +352,12 @@ public class Tnnk extends JPanel implements KeyListener {
         tnk.drawMe();
     }
 
-    int diffX = 111110, diffY = 111110;
-
     private void moveBall() {
-
         ballX = startX + (xSpeed * time);
-        ballY = startY - ((ySpeed *time)-(100.0 *G * Math.pow(time, 2))) ;
+        ballY = startY - ((ySpeed *time)-(1.0 *G * Math.pow(time, 2))) ;
         time += deltaTime;
         
         int minX = 111110, minY = 111110;
-        int j = -1;
         int listFound = -1;
         
         int x = -10, y = -10;
@@ -375,7 +371,6 @@ public class Tnnk extends JPanel implements KeyListener {
                 y = y2;
             }
         }
-        System.out.println("size: " + list.size());
         
         double dis = 0d;
                 
@@ -386,7 +381,7 @@ public class Tnnk extends JPanel implements KeyListener {
             int x2 = list.get(xxxx).x;
             int y2 = list.get(xxxx).y;
 
-            dis=Math. sqrt((x2-x)*(x2-x) + (y2-y)*(y2-y));
+            dis = Math.sqrt((x2-x)*(x2-x) + (y2-y)*(y2-y));
 
             if(dis < ddis) {
                 minX = x2;
@@ -395,9 +390,6 @@ public class Tnnk extends JPanel implements KeyListener {
                 listFound = xxxx;
             }
         }
-        
-        if(x >= 0 && y >= 0)
-            System.out.println(listFound + "   " + diffX + "," + diffY);
         
         if(x >= 0 && y >= 0) {
             diffX = 111110; diffY = 111110;
@@ -431,58 +423,6 @@ public class Tnnk extends JPanel implements KeyListener {
 
             shooting = false;
         }
-        
-//        for(int i=0; i<list.size(); i++) {
-//            try {
-//                int y2, y1, x2, x1;
-//                y2 = list.get(i+1).y;
-//                y1 = list.get(i).y;
-//                x2 = list.get(i+1).x;
-//                x1 = list.get(i).x;
-//                double m = (double)(y2 - y1)/(double)(x2 - x1);
-//                
-//                double v = (double)list.get(i+1).x;
-//                double u = -(double)list.get(i+1).y;
-//                double t = (double)list.get(i).x;
-//
-//                double w = 0d;
-//                    
-//                m = (u-(-1*(double)list.get(i).y))/(v - t);
-//                double c = y1 - m*x1;
-//
-//                if(Math.abs((ballY - c)/(ballX) - m) <= 0.6 && (Math.abs(ballX - x1) < 13 && Math.abs(ballY - y1) < 13)) {
-//                    
-//                    try {
-//                        drawExplosion((int)ballX,(int)ballY);
-//                        
-//                        list.remove(list.get(i+1));
-//
-//                        Point l = new Point();
-//                        l.x = (int) ballX + 2;
-//                        l.y = (int) ballY+30;
-//                        list.add(i+1, l);
-//                        l = new Point();
-//                        l.x = (int) ballX + 20;
-//                        l.y = (int) ballY + 30;
-//                        list.add(i+2, l);
-//
-//                        list.get(i).x = list.get(i).x - 50;
-//                        list.get(i).y = l.y + 30;
-//
-//                        list.get(i+1).x = list.get(i+1).x;
-//                        list.get(i+1).y = l.y + 30;
-//
-//                        list.get(i+2).x = list.get(i+2).x;
-//                        list.get(i+2).y = l.y + 30;
-//
-//                        time = -1;
-//
-//                        shooting = false;
-//
-//                    } catch(Exception e) {}
-//                }
-//            } catch(Exception e) {}
-//        }
 
         repaint();
     }
@@ -495,12 +435,9 @@ public class Tnnk extends JPanel implements KeyListener {
     }
 
     private boolean inBounds() {
-
-        if((ballX < 0) || (ballX > (getWidth()))
-                || ( ballY  > (getHeight() - ballDiameter) ) ) {
+        if((ballX < 0) || (ballX > (getWidth())) || ( ballY  > (getHeight() - ballDiameter))) {
             return false;
         }
-
         return true;
     }
 
@@ -515,7 +452,7 @@ public class Tnnk extends JPanel implements KeyListener {
     
     void setGUI() {
  
-        j.setTitle("Canton F L A T L A N D E R w/animation");
+        j.setTitle("F L A T L A N D E R w/animation");
         
         j.setLayout(null);
         j.setBounds(0, 0, 1200, 800);
@@ -530,8 +467,7 @@ public class Tnnk extends JPanel implements KeyListener {
     }
     
     public static void main(String[] args) {
-
-        try {
+       try {
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
